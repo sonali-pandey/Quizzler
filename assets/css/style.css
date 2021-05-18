@@ -14,7 +14,7 @@ body{
     margin: 5rem;
 }
 
-header{
+nav{
     display:flex;
     justify-content:space-between;
 }
@@ -22,11 +22,28 @@ header{
 h1{
     margin-bottom: 2rem;
     font-size: 3.4rem;
+    text-align:center;
 }
 
 p{
     font-size: 1.8rem;
     text-align:center;
+}
+
+button{
+    background-color:var(--button);
+    border:none;
+    color: white;
+    border-radius:8px;
+    display:inline-block;
+    font-size:2rem;
+    padding:1rem 2rem;
+}
+
+button:hover{
+    transition-duration:0.4s;
+    background-color:var(--highlight);
+    cursor:pointer;
 }
 
 .view-highscore{
@@ -36,25 +53,33 @@ p{
 .container{
     display:flex;
     flex-flow:column;
-    align-items:center;
-    margin: 10rem;
-
+    margin: 20rem;
+    width: 60rem;
+    height:30rem;
+}
+.button{
+    display:flex;
+    flex-flow:column;
 }
 
-.btn{
-    background-color:var(--button);
-    border:none;
-    color: white;
-    border-radius:8px;
+.options{
+    width:20rem;
+    text-align:left;
+    margin: 1rem 0;
+}
+
+#start-btn{
     text-align:center;
+    align-self:center;
     text-decoration:none;
-    display:inline-block;
-    font-size:2rem;
-    padding:1rem 2rem;
     margin:2rem;
 }
 
-.btn:hover{
-    transition-duration:0.4s;
-    background-color:var(--highlight);
+.question{
+    text-align:left;
+}
+
+.result{
+    color:grey;
+    font-size:2rem;
 }
