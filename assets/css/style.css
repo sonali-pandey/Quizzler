@@ -37,25 +37,48 @@ button{
     border-radius:8px;
     display:inline-block;
     font-size:2rem;
-    padding:1rem 2rem;
+    padding: 0 2rem;
+    transition-duration:0.4s;
+    height: 4rem;
+    text-align:center;
 }
 
 button:hover{
-    transition-duration:0.4s;
+
+    transform: translateY(-5px);
     background-color:var(--highlight);
     cursor:pointer;
+}
+
+form{
+    display: flex;
+    align-items:center;
+    margin: 2rem 0;
+}
+
+input{
+    margin: 0.5rem;
+    border: 2px grey solid;
+    width: 30rem;
+    height: 4rem;
+    text-align:center;
+    font-size: 2rem ;
 }
 
 .view-highscore{
     color:var(--highlight);
 }
 
+.score{
+    text-align: left;
+    font-size: 2rem;
+}
+
 .container{
     display:flex;
     flex-flow:column;
-    margin: 20rem;
-    width: 60rem;
-    height:30rem;
+   margin: 10rem 40rem;
+
 }
 .button{
     display:flex;
@@ -63,7 +86,7 @@ button:hover{
 }
 
 .options{
-    width:20rem;
+    width:25rem;
     text-align:left;
     margin: 1rem 0;
 }

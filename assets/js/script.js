@@ -1,6 +1,7 @@
 var startButtonEl = document.querySelector("#start-btn");
 var buttonsEl = document.querySelector(".button");
-var instructionEl = document.querySelector("main");
+var mainEl = document.querySelector("main");
+var instructionEl = document.querySelector(".instructions");
 var headerEl = document.querySelector(".title");
 var footerEl = document.querySelector(".result");
 var pageContentEl = document.querySelector(".container");
@@ -42,21 +43,10 @@ var questionsObj=[
 
 
 var clear = function(){
-    result.remove();
-};
+     result.remove();
+ };
 
-var checkQuestionCounter = function(){
-    questionCounter++;
-    if(questionCounter<questionsObj.length){
-        setTimeout(clear,300);
-        setTimeout(startQuiz,300);
-    }
-    else{
-            gameStatus = 1;
-        }
-}
-
-var optionButtonhandler = function(event){
+var optionButtonHandler = function(event){
 
     var optionIdEl = event.target.getAttribute("id");
     var selectedAnsEl = event.target.textContent;
@@ -65,6 +55,7 @@ var optionButtonhandler = function(event){
     // Check the answer only when options buttons are clicked
     // don't check for start button click
     if(optionIdEl!== "start-btn"){
+    if (optionIdEl==="1"||optionIdEl==="2"||optionIdEl==="3"||optionIdEl==="4"){
         if(selectedAnsEl===answerEl){
             wrong=0;
             result = document.createElement("p");
@@ -79,14 +70,22 @@ var optionButtonhandler = function(event){
         result.textContent="Wrong!";
         footerEl.appendChild(result);
         }
-
-     checkQuestionCounter();
     }
+}
+    else{
+        return;
+    }
+    questionCounter++;
+    setTimeout(clear, 300);
+    setTimeout(startQuiz,300);
 };
 
 var clearInstruction = function(){
-    startButtonEl.remove();
-    instructionEl.remove();
+
+    // remove instructions and start button
+    buttonsEl.innerHTML="";
+    mainEl.innerHTML="";
+
     for(var i=0; i<4; i++){
         //creating 4 clickable options
         optionsEl = document.createElement("button");
@@ -98,20 +97,61 @@ var clearInstruction = function(){
     startQuiz();
 }
 
+var checkTimer = function(){
+    if(timeLeft>0){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+
+var highScore = function(){
+    // Completion announcement
+    headerEl.textContent = "All done!";
+
+    //Final Score Display
+    var score = document.createElement("p");
+    score.className = "score";
+    score.textContent = "Your final score is " + timeLeft + ".";
+    mainEl.appendChild(score);
+    buttonsEl.innerHTML = "";
+
+    //Form to enter initials
+    var formEl = document.createElement("form");
+    mainEl.appendChild(formEl);
+    formEl.innerHTML="<p class='score'>Enter initials:</p><input type='text'><button class='btn'>Submit</button>";
+
+
+}
 var startQuiz = function(){
 
-    // display question
-    var questionsEl = document.querySelector("h1");
+    if(gameStatus===0){
+        
+        if(questionCounter<questionsObj.length){
 
-        questionsEl.textContent = questionsObj[questionCounter].question;
-        questionsEl.className = "question title";
+            if(checkTimer()){
+                // display question
+                headerEl.textContent = questionsObj[questionCounter].question;
+                headerEl.className = "question title";
 
-        for(var i= 0; i<4; i++){
-            var optionsValueEl = document.getElementById(i+1);
-            optionsValueEl.textContent= questionsObj[questionCounter].option[i];
+                // display options
+                for(var i= 0; i<4; i++){
+                    var optionsValueEl = document.getElementById(i+1);
+                    optionsValueEl.textContent= questionsObj[questionCounter].option[i];
+                }
+            }
         }
-
+        else{
+            gameStatus=1;
+            highScore();
+        }
+    }
+    else{
+    highScore();
+    //console.log("ALL DONE");
+    }
 };
 
 startButtonEl.addEventListener("click",clearInstruction);
-buttonsEl.addEventListener("click",optionButtonhandler);
+buttonsEl.addEventListener("click",optionButtonHandler);
