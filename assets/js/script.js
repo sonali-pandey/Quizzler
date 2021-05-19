@@ -5,12 +5,22 @@ var instructionEl = document.querySelector(".instructions");
 var headerEl = document.querySelector(".title");
 var footerEl = document.querySelector(".result");
 var pageContentEl = document.querySelector(".container");
+var viewScoreEl = document.querySelector("#view-highscore");
+
 var questionCounter = 0;
+var points=0;
 var gameStatus = 0;
 var wrong = 0;
 var optionsEl;
 var result;
+var names;
+var score = 0;
 
+var savedScore = [];
+var savedScoreObj={
+    name: names,
+    points:points
+}
 
 var questionsObj=[
     {
@@ -45,6 +55,10 @@ var questionsObj=[
 var clear = function(){
      result.remove();
  };
+
+ function refresh(){
+    location.reload();
+}
 
 var optionButtonHandler = function(event){
 
@@ -106,24 +120,123 @@ var checkTimer = function(){
     }
 };
 
+var loadTasks = function (){
+
+    // retrieve tasks from localStorage
+    savedScore=localStorage.getItem("user");
+
+    if (savedScore === null){
+        savedScore = [];
+        return false;
+    }
+
+    savedScore = JSON.parse(savedScore);
+
+    for(var i=0; i<savedScore.length; i++){
+        console.log(savedScore[i]);
+    }
+}
+
+var sorting = function(){
+    var temp = [];
+    if(savedScore===null){
+        return;
+    }
+    for(j=0; j<savedScore.length;j++){
+        for(i=0; i<savedScore.length;i++){
+            if(savedScore[j].points>savedScore[i].points){
+                temp = savedScore[i];
+                savedScore[i]=savedScore[j];
+                savedScore[j]=temp;
+            }
+        }
+    }
+var l = savedScore.length - 3;
+savedScore.splice(4,l);
+};
+
+function clearScore(){
+    localStorage.clear();
+    var l = savedScore.length;
+    savedScore.splice(0,l);
+    viewHighScore();
+}
+
+var viewHighScore = function(){
+    headerEl.textContent = "High Scores";
+    mainEl.innerHTML="";
+    sorting();
+    console.log(savedScore.length);
+    for(var i=0; i<savedScore.length; i++){
+        var a = document.createElement("p");
+        a.className="display-score";
+        a.textContent= (i+1) + ". " + savedScore[i].name + " - " + savedScore[i].points;
+        mainEl.appendChild(a);
+    }
+
+    var goBack = document.createElement("button");
+    goBack.className="go-back";
+    goBack.textContent = "Go Back";
+    mainEl.appendChild(goBack);
+    var goBackEl = document.querySelector(".go-back");
+
+    var clearHighscore  = document.createElement("button");
+    clearHighscore.className="clear-score";
+    clearHighscore.textContent="Clear HighScore";
+    mainEl.appendChild(clearHighscore);
+    var clearHighscoreEl = document.querySelector(".clear-score");
+    
+    goBackEl.addEventListener("click",refresh);
+    clearHighscoreEl.addEventListener("click",clearScore);
+
+};
+
+var submit = function(event){
+    event.preventDefault();
+    savedScore = localStorage.getItem("user");
+    if(savedScore === null){
+        savedScore=[];
+        //return false;
+    }
+    else{
+    savedScore = JSON.parse(savedScore);
+    console.log(savedScore);
+    }
+
+    if(event.target.id !== "view-highscore"){
+    var inputEl = document.querySelector("input");
+    names = inputEl.value;
+    savedScoreObj.name = names;
+    savedScoreObj.points = points;
+    savedScore.push(savedScoreObj);
+    console.log(savedScore);
+    localStorage.setItem("user",JSON.stringify(savedScore));
+    }
+    viewHighScore();
+};
+
+
 var highScore = function(){
     // Completion announcement
     headerEl.textContent = "All done!";
-
+    points = timeLeft;
     //Final Score Display
     var score = document.createElement("p");
     score.className = "score";
-    score.textContent = "Your final score is " + timeLeft + ".";
+    score.textContent = "Your final score is " + points + ".";
     mainEl.appendChild(score);
     buttonsEl.innerHTML = "";
 
     //Form to enter initials
     var formEl = document.createElement("form");
+    formEl.setAttribute("name","submit-form");
     mainEl.appendChild(formEl);
-    formEl.innerHTML="<p class='score'>Enter initials:</p><input type='text'><button class='btn'>Submit</button>";
+    formEl.innerHTML="<p class='score'>Enter initials:</p><input type='text' name='initials'><button class='btn' id='submit-btn'>Submit</button>";
 
-
+    var submitEl = document.querySelector("#submit-btn");
+    submitEl.addEventListener("click",submit);
 }
+
 var startQuiz = function(){
 
     if(gameStatus===0){
@@ -149,9 +262,10 @@ var startQuiz = function(){
     }
     else{
     highScore();
-    //console.log("ALL DONE");
     }
 };
 
+
 startButtonEl.addEventListener("click",clearInstruction);
 buttonsEl.addEventListener("click",optionButtonHandler);
+viewScoreEl.addEventListener("click",submit);

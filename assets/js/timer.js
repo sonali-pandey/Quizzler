@@ -44,7 +44,7 @@ function startTimer(){
         else{
             clearInterval(countDown);
         }
-},100);
+},1000);
 };
 
 startButtonEl.addEventListener("click",startTimer);

@@ -65,8 +65,19 @@ input{
     font-size: 2rem ;
 }
 
-.view-highscore{
+#view-highscore{
     color:var(--highlight);
+    cursor:pointer;
+}
+
+.display-score{
+    border: none;
+    background-color: rgb(217,210,233) ;
+    padding: 1rem;
+    width: 50rem;
+    height: 4rem;
+    text-align:left;
+    font-size: 2rem ;
 }
 
 .score{
