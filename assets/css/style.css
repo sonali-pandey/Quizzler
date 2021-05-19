@@ -50,6 +50,7 @@ button:hover{
     cursor:pointer;
 }
 
+/* Initial Entry for Highscore storage*/
 form{
     display: flex;
     align-items:center;

@@ -7,21 +7,24 @@ var footerEl = document.querySelector(".result");
 var pageContentEl = document.querySelector(".container");
 var viewScoreEl = document.querySelector("#view-highscore");
 
-var questionCounter = 0;
-var points=0;
-var gameStatus = 0;
-var wrong = 0;
+var questionCounter = 0; // counts the question number we are at
+var points=0; 
+var gameStatus = 0; // sets to 1 if timer = 0 or questions are finished 
+var wrong = 0; // sets to 1 if answer is wrong for penalizing
 var optionsEl;
 var result;
 var names;
-var score = 0;
 
+// array to push the user name and highscore
 var savedScore = [];
+
+// object to save user details
 var savedScoreObj={
     name: names,
     points:points
 }
 
+// Quiz Questions and Answers Object
 var questionsObj=[
     {
         question:"Commonly used data types DO NOT include:",
@@ -51,15 +54,17 @@ var questionsObj=[
 ]
 
 
-
+// Clear individual questions's result before moving ahead to next
 var clear = function(){
      result.remove();
  };
 
+// reload the page
  function refresh(){
     location.reload();
 }
 
+// Handler for option selection for each answer
 var optionButtonHandler = function(event){
 
     var optionIdEl = event.target.getAttribute("id");
@@ -69,27 +74,31 @@ var optionButtonHandler = function(event){
     // Check the answer only when options buttons are clicked
     // don't check for start button click
     if(optionIdEl!== "start-btn"){
-    if (optionIdEl==="1"||optionIdEl==="2"||optionIdEl==="3"||optionIdEl==="4"){
-        if(selectedAnsEl===answerEl){
-            wrong=0;
-            result = document.createElement("p");
-            result.className="result";
-            result.textContent="Correct!";
-            footerEl.appendChild(result);
-        }
-        else{ 
-        wrong=1;
-        result = document.createElement("p");
-        result.className="result";
-        result.textContent="Wrong!";
-        footerEl.appendChild(result);
+        if (optionIdEl==="1"||optionIdEl==="2"||optionIdEl==="3"||optionIdEl==="4"){
+            if(selectedAnsEl===answerEl){
+                wrong=0;
+                result = document.createElement("p");
+                result.className="result";
+                result.textContent="Correct!";
+                footerEl.appendChild(result);
+            }
+            else{ 
+                wrong=1;
+                result = document.createElement("p");
+                result.className="result";
+                result.textContent="Wrong!";
+                footerEl.appendChild(result);
+            }
         }
     }
-}
     else{
         return;
     }
+    
+    // increment the question
     questionCounter++;
+
+    // Timer before moving on to next question
     setTimeout(clear, 300);
     setTimeout(startQuiz,300);
 };
@@ -101,7 +110,7 @@ var clearInstruction = function(){
     mainEl.innerHTML="";
 
     for(var i=0; i<4; i++){
-        //creating 4 clickable options
+        //creating 4 clickable options button
         optionsEl = document.createElement("button");
         optionsEl.className= "options";
         optionsEl.setAttribute("id",i+1);
@@ -109,8 +118,9 @@ var clearInstruction = function(){
         buttonsEl.appendChild(optionsEl);
     }
     startQuiz();
-}
+};
 
+// Making sure the time left before moving to next question
 var checkTimer = function(){
     if(timeLeft>0){
         return true;
@@ -120,19 +130,23 @@ var checkTimer = function(){
     }
 };
 
+// get saved data from local Storage
 var loadTasks = function (){
 
     // retrieve tasks from localStorage
     savedScore=localStorage.getItem("user");
 
+    // if null then keep the array empty
     if (savedScore === null){
         savedScore = [];
         return false;
     }
 
     savedScore = JSON.parse(savedScore);
-}
+};
 
+
+// sorting the highscore entries: highest to lowest and keeping top 4
 var sorting = function(){
     var temp = [];
     if(savedScore===null){
@@ -147,21 +161,27 @@ var sorting = function(){
             }
         }
     }
+
+// keeping top 4 score and deleting rest from array
 var l = savedScore.length - 3;
 savedScore.splice(4,l);
 };
 
+// clear highscore entries
 function clearScore(){
     localStorage.clear();
     var l = savedScore.length;
     savedScore.splice(0,l);
     viewHighScore();
-}
+};
+
 
 var viewHighScore = function(){
     headerEl.textContent = "High Scores";
     mainEl.innerHTML="";
     sorting();
+
+    // display highscores
     for(var i=0; i<savedScore.length; i++){
         var a = document.createElement("p");
         a.className="display-score";
@@ -169,6 +189,7 @@ var viewHighScore = function(){
         mainEl.appendChild(a);
     }
 
+    // Go back and clear highscore buttons
     var goBack = document.createElement("button");
     goBack.className="go-back";
     goBack.textContent = "Go Back";
@@ -181,23 +202,30 @@ var viewHighScore = function(){
     mainEl.appendChild(clearHighscore);
     var clearHighscoreEl = document.querySelector(".clear-score");
     
+    //go back element on click refreshes the page
     goBackEl.addEventListener("click",refresh);
+
+    //clearHighscore element on click clears all the highscores
     clearHighscoreEl.addEventListener("click",clearScore);
 
 };
 
+// submit the current score
 var submit = function(event){
     event.preventDefault();
     buttonsEl.remove();
+
+    // gett stored items to local array before pushing new entries
     savedScore = localStorage.getItem("user");
+
     if(savedScore === null){
         savedScore=[];
-        //return false;
     }
     else{
     savedScore = JSON.parse(savedScore);
     }
 
+    // checking if the view-highscore shortcut was clicked if not gop ahead with the new entry addition (shortcut won't add new entry)
     if(event.target.id !== "view-highscore"){
     var inputEl = document.querySelector("input");
     names = inputEl.value;
@@ -209,11 +237,13 @@ var submit = function(event){
     viewHighScore();
 };
 
-
+// displaying the score after the quiz is completed
 var highScore = function(){
+
     // Completion announcement
     headerEl.textContent = "All done!";
     points = timeLeft;
+
     //Final Score Display
     var score = document.createElement("p");
     score.className = "score";
@@ -227,12 +257,14 @@ var highScore = function(){
     mainEl.appendChild(formEl);
     formEl.innerHTML="<p class='score'>Enter initials:</p><input type='text' name='initials'><button class='btn' id='submit-btn'>Submit</button>";
 
+    // submit button event listener
     var submitEl = document.querySelector("#submit-btn");
     submitEl.addEventListener("click",submit);
 }
 
 var startQuiz = function(){
 
+    // game status checking if the questions are answered or the timer ran out- continues is neither triggered the status
     if(gameStatus===0){
         
         if(questionCounter<questionsObj.length){
