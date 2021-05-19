@@ -102,7 +102,7 @@ input{
     margin: 1rem 0;
 }
 
-#start-btn{
+#start-btn, .go-Back, .clear-score{
     text-align:center;
     align-self:center;
     text-decoration:none;
@@ -116,4 +116,12 @@ input{
 .result{
     color:grey;
     font-size:2rem;
+}
+
+@media screen and (max-width: 1500px){
+     .container{
+         flex:1 100%;
+         margin: 0;
+      }
+    
 }

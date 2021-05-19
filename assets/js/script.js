@@ -131,10 +131,6 @@ var loadTasks = function (){
     }
 
     savedScore = JSON.parse(savedScore);
-
-    for(var i=0; i<savedScore.length; i++){
-        console.log(savedScore[i]);
-    }
 }
 
 var sorting = function(){
@@ -166,7 +162,6 @@ var viewHighScore = function(){
     headerEl.textContent = "High Scores";
     mainEl.innerHTML="";
     sorting();
-    console.log(savedScore.length);
     for(var i=0; i<savedScore.length; i++){
         var a = document.createElement("p");
         a.className="display-score";
@@ -193,6 +188,7 @@ var viewHighScore = function(){
 
 var submit = function(event){
     event.preventDefault();
+    buttonsEl.remove();
     savedScore = localStorage.getItem("user");
     if(savedScore === null){
         savedScore=[];
@@ -200,7 +196,6 @@ var submit = function(event){
     }
     else{
     savedScore = JSON.parse(savedScore);
-    console.log(savedScore);
     }
 
     if(event.target.id !== "view-highscore"){
@@ -209,7 +204,6 @@ var submit = function(event){
     savedScoreObj.name = names;
     savedScoreObj.points = points;
     savedScore.push(savedScoreObj);
-    console.log(savedScore);
     localStorage.setItem("user",JSON.stringify(savedScore));
     }
     viewHighScore();
